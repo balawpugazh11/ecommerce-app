@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+  }
+
+  html {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Monochrome base */
+    @apply bg-white text-gray-900 antialiased;
+  }
+
+  a {
+    @apply text-gray-900;
+  }
+
+  a:hover {
+    @apply underline;
+  }
+}
+
+/* Simple component classes */
+@layer components {
+  .container {
+    @apply max-w-5xl mx-auto px-4;
+  }
+
+  .section {
+    @apply py-12;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded text-sm transition-colors;
+  }
+  .btn-primary {
+    @apply btn bg-black text-white hover:bg-gray-900 border border-black;
+  }
+  .btn-ghost {
+    @apply btn border border-gray-300 text-gray-800 hover:border-black hover:text-black;
+  }
+
+  .nav-link {
+    @apply px-1 py-1 text-sm sm:text-base;
+  }
+  .nav-link-inactive {
+    @apply text-gray-700 hover:text-black hover:underline;
+  }
+  .nav-link-active {
+    @apply text-black underline;
+  }
+
+  .card {
+    @apply border border-gray-200 rounded p-4 hover:shadow-sm transition-shadow;
+  }
+  .card-media {
+    @apply w-full h-40 sm:h-48 md:h-56 bg-gray-100 flex items-center justify-center mb-3 overflow-hidden;
+  }
+
+  .grid-products {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4;
+  }
+
+  .hero {
+    @apply relative h-[50vh] min-h-[320px] flex items-center overflow-hidden;
+  }
+  .hero-overlay {
+    @apply absolute inset-0 bg-black/40;
+  }
+
+  .heading-1 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+  .heading-2 {
+    @apply text-xl font-semibold;
+  }
+  .text-muted {
+    @apply text-gray-700;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-gray-700;
+  }
+  .input {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm;
+  }
+
+  /* One-time hover-like animation helper */
+  .animate-hover-once {
+    animation: btnHoverOnce 900ms ease 150ms 1;
+  }
+}
+
+@keyframes btnHoverOnce {
+  0% { background-color: #000000; transform: scale(1); }
+  50% { background-color: #111827; transform: scale(1.02); }
+  100% { background-color: #000000; transform: scale(1); }
+}
