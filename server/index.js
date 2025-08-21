@@ -8,18 +8,26 @@ import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 
+// Load environment variables
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
 
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(
-  process.env.MONGO_URI || 'mongodb+srv://balawpugazh:AE8LWFqlyNJm6h1j@cluster.owh7xqo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster',
-)
+// Connect to MongoDB with error handling
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error('MongoDB connection error:', error));
+  .catch((error) => {
+    console.error('MongoDB connection error:', error);
+    process.exit(1); // Exit the process so you catch connection errors immediately
+  });
 
 // Example root route
 app.get('/', (req, res) => {
