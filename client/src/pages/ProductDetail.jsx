@@ -10,7 +10,10 @@ const ProductDetail = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
+    const baseUrl =
+      import.meta.env.VITE_API_URL ||
+      (window.location.port === '5173' ? 'http://localhost:5000' : window.location.origin);
+    fetch(`${baseUrl}/api/products/${id}`)
       .then(res => res.json())
       .then(data => {
         setProduct(data);
@@ -19,8 +22,8 @@ const ProductDetail = () => {
       .catch(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div className="text-center py-8">Loading product...</div>;
-  if (!product) return <div className="text-center py-8 text-red-500">Product not found.</div>;
+  if (loading) return <div className="text-center py-8 text-white">Loading product...</div>;
+  if (!product) return <div className="text-center py-8 text-white">Product not found.</div>;
 
   // OPTIONAL: Prevent adding duplicate product (if needed)
   const isInCart = cartItems?.some(item => item._id === product._id);

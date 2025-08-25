@@ -1,11 +1,12 @@
 import express from 'express';
-import { protect } from '../middleware/auth.js';
 import Cart from '../models/Cart-items.js';
+import { verifyFirebaseToken } from '../middleware/firebaseAuth.js';
+
 
 const router = express.Router();
 
 // Get current user's cart
-router.get('/', protect, async (req, res) => {
+router.get('/', verifyFirebaseToken, async (req, res) => {
   let cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
   if (!cart) {
     cart = await Cart.create({ user: req.user._id, items: [] });
@@ -14,7 +15,7 @@ router.get('/', protect, async (req, res) => {
 });
 
 // Add item to cart
-router.post('/add', protect, async (req, res) => {
+router.post('/add', verifyFirebaseToken, async (req, res) => {
   const { productId, quantity = 1 } = req.body;
   if (!productId) return res.status(400).json({ message: 'productId required' });
 
@@ -34,7 +35,7 @@ router.post('/add', protect, async (req, res) => {
 });
 
 // Update item quantity
-router.put('/item/:productId', protect, async (req, res) => {
+router.put('/item/:productId', verifyFirebaseToken, async (req, res) => {
   const { quantity } = req.body;
   if (quantity == null || quantity < 1) return res.status(400).json({ message: 'quantity must be >= 1' });
 
@@ -52,7 +53,7 @@ router.put('/item/:productId', protect, async (req, res) => {
 });
 
 // Remove item
-router.delete('/item/:productId', protect, async (req, res) => {
+router.delete('/item/:productId', verifyFirebaseToken, async (req, res) => {
   const cart = await Cart.findOne({ user: req.user._id });
   if (!cart) return res.status(404).json({ message: 'Cart not found' });
 
@@ -64,7 +65,7 @@ router.delete('/item/:productId', protect, async (req, res) => {
 });
 
 // Clear cart
-router.delete('/clear', protect, async (req, res) => {
+router.delete('/clear', verifyFirebaseToken, async (req, res) => {
   const cart = await Cart.findOne({ user: req.user._id });
   if (!cart) return res.status(404).json({ message: 'Cart not found' });
   cart.items = [];

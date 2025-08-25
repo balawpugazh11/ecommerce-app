@@ -32,7 +32,7 @@
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/Review" element={<Review />} />
+                <Route path="/review" element={<Review />} />
               </Routes>
             </main>
             <Footer />

@@ -1,12 +1,13 @@
 import express from 'express';
-import { protect } from '../middleware/auth.js';
 import Order from '../models/orders.js';
 import Cart from '../models/Cart-items.js';
+import { verifyFirebaseToken } from '../middleware/firebaseAuth.js';
+
 
 const router = express.Router();
 
 // Create order from current cart
-router.post('/', protect, async (req, res) => {
+router.post('/', verifyFirebaseToken, async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
     if (!cart || cart.items.length === 0) {
@@ -29,13 +30,13 @@ router.post('/', protect, async (req, res) => {
 });
 
 // Get user's orders
-router.get('/', protect, async (req, res) => {
+router.get('/', verifyFirebaseToken, async (req, res) => {
   const orders = await Order.find({ user: req.user._id }).populate('products.product');
   res.json(orders);
 });
 
 // Get single order
-router.get('/:id', protect, async (req, res) => {
+router.get('/:id', verifyFirebaseToken, async (req, res) => {
   const order = await Order.findOne({ _id: req.params.id, user: req.user._id }).populate('products.product');
   if (!order) return res.status(404).json({ message: 'Order not found' });
   res.json(order);

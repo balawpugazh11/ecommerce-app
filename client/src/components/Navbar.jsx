@@ -8,7 +8,7 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const { cartCount, wishlistCount } = useCart();
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -132,25 +132,7 @@ const Navbar = () => {
           >
             Products
           </NavLink>
-          <NavLink
-            to="/compare"
-            className="block"
-            onClick={() => setOpen(false)}
-          >
-            Compare
-          </NavLink>
-          <NavLink
-            to="/wishlist"
-            className="block relative"
-            onClick={() => setOpen(false)}
-          >
-            Wishlist
-            {wishlistCount > 0 && (
-              <span className="ml-1 text-xs bg-green-700 text-white rounded-full px-1">
-                {wishlistCount}
-              </span>
-            )}
-          </NavLink>
+          
           <Link
             to="/cart"
             className="block relative"

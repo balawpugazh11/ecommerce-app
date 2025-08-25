@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/users.js';
-import { protect } from '../middleware/auth.js';
+import { verifyFirebaseToken } from '../middleware/firebaseAuth.js';
 
 const router = express.Router();
 
@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Profile
-router.get('/me', protect, async (req, res) => {
+router.get('/me', verifyFirebaseToken, async (req, res) => {
   return res.json(req.user);
 });
 

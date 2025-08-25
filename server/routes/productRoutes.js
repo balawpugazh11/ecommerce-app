@@ -1,8 +1,11 @@
 import express from "express";
 import Product from "../models/products.js";   // Uppercase for model
-import { protect, admin } from "../middleware/auth.js";
+import { verifyFirebaseToken } from '../middleware/firebaseAuth.js';
+import { admin } from '../middleware/admin.js';
+
 
 const router = express.Router();
+
 
 // Get all products
 router.get("/", async (req, res) => {
@@ -26,7 +29,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Create a new product (admin)
-router.post("/", protect, admin, async (req, res) => {
+router.post("/", verifyFirebaseToken, admin, async (req, res) => {
   try {
     const newProduct = new Product(req.body);
     await newProduct.save();
@@ -37,7 +40,7 @@ router.post("/", protect, admin, async (req, res) => {
 });
 
 // Update a product (admin)
-router.put("/:id", protect, admin, async (req, res) => {
+router.put("/:id", verifyFirebaseToken, admin, async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -52,7 +55,7 @@ router.put("/:id", protect, admin, async (req, res) => {
 });
 
 // Delete a product (admin)
-router.delete("/:id", protect, admin, async (req, res) => {
+router.delete("/:id", verifyFirebaseToken, admin, async (req, res) => {
   try {
     const result = await Product.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ error: "Product not found" });
