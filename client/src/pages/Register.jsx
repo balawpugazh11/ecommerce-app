@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebase";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -27,7 +29,7 @@ const Register = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const foundErrors = validate();
     if (Object.keys(foundErrors).length > 0) {
@@ -35,15 +37,33 @@ const Register = () => {
       setSuccess("");
       return;
     }
-    // TODO: Backend register API call here.
-    setSuccess("Account created successfully! You can now login.");
-    setForm({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    });
+    setSuccess("");
     setErrors({});
+    try {
+      // Create user with Firebase
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        form.email,
+        form.password
+      );
+      // Optionally update displayName
+      if (form.name) {
+        await updateProfile(userCredential.user, { displayName: form.name });
+      }
+      setSuccess("Account created successfully! You can now login.");
+      setForm({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+    } catch (err) {
+      let errMsg = err.message;
+      if (err.code === "auth/email-already-in-use") {
+        errMsg = "Email is already registered!";
+      }
+      setErrors({ general: errMsg });
+    }
   };
 
   return (
@@ -55,6 +75,9 @@ const Register = () => {
           {success}
         </div>
       )}
+      {errors.general && (
+        <div className="text-red-500 text-xs mb-3 text-center">{errors.general}</div>
+      )}
       <form className="bg-white shadow-md rounded px-8 py-8" onSubmit={handleSubmit} noValidate>
         <div className="mb-5">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -65,9 +88,7 @@ const Register = () => {
             value={form.name}
             onChange={handleChange}
             autoComplete="name"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${
-              errors.name ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${errors.name ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"}`}
           />
           {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
         </div>
@@ -80,9 +101,7 @@ const Register = () => {
             value={form.email}
             onChange={handleChange}
             autoComplete="email"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${
-              errors.email ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${errors.email ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"}`}
           />
           {errors.email && <div className="text-red-500 text-xs mt-1">{errors.email}</div>}
         </div>
@@ -95,9 +114,7 @@ const Register = () => {
             value={form.password}
             onChange={handleChange}
             autoComplete="new-password"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${
-              errors.password ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${errors.password ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"}`}
           />
           {errors.password && <div className="text-red-500 text-xs mt-1">{errors.password}</div>}
         </div>
@@ -112,9 +129,7 @@ const Register = () => {
             value={form.confirmPassword}
             onChange={handleChange}
             autoComplete="new-password"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${
-              errors.confirmPassword ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 ${errors.confirmPassword ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-blue-500"}`}
           />
           {errors.confirmPassword && (
             <div className="text-red-500 text-xs mt-1">{errors.confirmPassword}</div>

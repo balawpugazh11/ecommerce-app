@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useCart } from "../context/CartContext";
 
 const Checkout = () => {
   const [shipping, setShipping] = useState({
@@ -11,8 +12,12 @@ const Checkout = () => {
   });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState("");
-  // Simulated total — get this from cart in real app
-  const totalAmount = 85699;
+
+  // Grab cart details
+  const { cartItems, clearCart } = useCart();
+
+  // Calculate the real total
+  const totalAmount = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
 
   const handleChange = (e) => {
     setShipping({ ...shipping, [e.target.name]: e.target.value });
@@ -43,6 +48,7 @@ const Checkout = () => {
       return;
     }
     setSuccess("Order placed! (In real app, payment step comes here)");
+    clearCart(); // Clear the cart after placing order
     setShipping({
       fullName: "",
       address: "",
@@ -56,9 +62,9 @@ const Checkout = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-semibold mb-6 text-gray-800">Checkout</h1>
+      <h1 className="text-3xl font-semibold mb-6 text-white">Checkout</h1>
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Shipping & Payment */}
+        {/* Form */}
         <form
           className="bg-white rounded-lg shadow p-8 flex-1"
           onSubmit={handleSubmit}
@@ -189,19 +195,26 @@ const Checkout = () => {
                 This is a demo. You'll see real payment options once integrated!
               </p>
             </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg mt-7 hover:bg-blue-700 transition-colors"
-            >
-              Place Order
-            </button>
           </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg mt-7 hover:bg-blue-700 transition-colors"
+          >
+            Place Order
+          </button>
         </form>
         {/* Order Summary */}
         <div className="bg-white rounded-lg shadow p-8 w-full md:w-80 self-start">
           <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+          {/* List products */}
           <ul className="text-gray-700 mb-6 text-sm">
-            <li className="flex justify-between mb-3">
+            {cartItems.map((item) => (
+              <li key={item._id} className="flex justify-between mb-1">
+                <span>{item.name}</span>
+                <span>₹{item.price}</span>
+              </li>
+            ))}
+            <li className="flex justify-between my-3">
               <span>Items Total</span>
               <span>₹{totalAmount.toLocaleString()}</span>
             </li>

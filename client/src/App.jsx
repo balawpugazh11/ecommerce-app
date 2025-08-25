@@ -7,36 +7,40 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Account from './pages/Account';
-import Checkout from './pages/Checkout';
+import Profile from './pages/profile';
+import Checkout from './components/Checkout';
 import About from './components/About';
-import Review from './pages/Review'; 
+import Review from './pages/Review';
+import { CartProvider } from './context/CartContext'
+
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/review" element={<Review />} />
-            {/* Optional: fallback route */}
-            {/* <Route path="*" element={<NotFound />} /> */}
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <CartProvider>
+        <div className="min-h-screen bg-black flex flex-col">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/Review" element={<Review />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </CartProvider>
     </BrowserRouter>
+    
   );
 }
+
 
 export default App;

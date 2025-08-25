@@ -10,7 +10,7 @@ const Footer = () => (
         <div>
           <div className="flex items-center gap-2 mb-4">
             <img src="/iconsB.png" alt="Logo" className="h-8 w-8 bg-white rounded-lg" />
-            <span className="text-xl font-bold">Bala's Ecommerce</span>
+            <span className="text-xl font-bold">Mobistore</span>
           </div>
           <p className="text-gray-300 text-sm">
             Your trusted destination for premium mobile gadgets and electronics.
